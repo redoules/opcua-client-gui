@@ -432,6 +432,37 @@ class Window(QMainWindow):
         dia = CallMethodDialog(self, self.uaclient.client, node)
         dia.show()
 
+    def closeEvent(self, event):
+        with open("data.txt", 'w') as f:
+                f.write(str(self.listNodes()))
+
+
+    def listNodes(self):
+        data = []
+        model = self.tree_ui.model
+        root = model.item(0)
+
+        tmp = []
+        for i, e in enumerate(iterItems(root)):
+            if i % 3 == 0:
+                tmp = [e.text()]
+            elif i % 3 == 1:
+                tmp.append(e.text())
+            else:
+                tmp.append(e.text())
+                data.append(tmp)
+        return data
+
+def iterItems( root):
+    def recurse(parent):
+        for row in range(parent.rowCount()):
+            for column in range(parent.columnCount()):
+                child = parent.child(row, column)
+                yield child
+                if child.hasChildren():
+                    yield from recurse(child)
+    if root is not None:
+        yield from recurse(root)
 
 def main():
     app = QApplication(sys.argv)
